@@ -3,7 +3,7 @@ package com.example.commerce.business.dto;
 public class CategoryDto {
 	private long categoryId;
 	private String categoryName;
-	
+
 	public long getCategoryId() {
 		return categoryId;
 	}

@@ -36,15 +36,16 @@ public class CategoryServiceImpl implements CategoryService{
 	}
 
 	@Override
-	public void delete(CategoryDto categoryDto) {
-		Category category = toEntity(categoryDto);
-		categoryRepository.delete(category);
+	public void delete(long categoryId) {
+		
+		categoryRepository.deleteById(categoryId);
 	}
 
 	@Override
 	public CategoryDto find(long categoryId) {
 		Optional<Category> optional = categoryRepository.findById(categoryId);
 		if(optional.isPresent()) {
+			
 			return toDto(optional.get());
 		}
 		return null;
@@ -54,13 +55,12 @@ public class CategoryServiceImpl implements CategoryService{
 	public List<CategoryDto> list() {
 		List<CategoryDto> categories = new ArrayList<>();
 		for (Category category : categoryRepository.findAll()) {
-			categories.add(toDto(category));
-			
+			categories.add(toDto(category));			
 		}
 		System.out.println(categories.size()+" retrieved");
 		return categories;
 	}
-	
+
 	private CategoryDto toDto(Category category) {
 		CategoryDto categoryDto = new CategoryDto();
 		categoryDto.setCategoryId(category.getCategoryId());

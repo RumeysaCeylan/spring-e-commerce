@@ -1,5 +1,6 @@
 package com.example.commerce.data.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -10,16 +11,19 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name="Product")
+@Table(name="product")
 public class Product {
 	
 	@Id @GeneratedValue(strategy =  GenerationType.IDENTITY)
+	@Column(name = "category_id")
 	private long productId;
+	@Column(name = "category_name")
 	private String productName;
+	@Column(name = "sales_price")
 	private double salesPrice;
 
-	@ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "categoryId")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "category_id",insertable = false, updatable = false)
     private Category category;
 	
     public long getProductId() {
@@ -53,6 +57,8 @@ public class Product {
 	public void setCategory(Category category) {
 		this.category = category;
 	}
+
+	
 
     
 }

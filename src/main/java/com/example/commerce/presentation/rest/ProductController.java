@@ -9,10 +9,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.example.commerce.business.dto.ProductDto;
 import com.example.commerce.business.service.ProductService;
-
+@RestController
 public class ProductController {
 	private ProductService productService;
 
@@ -37,7 +38,7 @@ public class ProductController {
 	}
 	@GetMapping("/product/{id}")
 	public ProductDto getProductbyId(@PathVariable("id") long productId) {
-		return productService.find(productId);
+		return productService.findProductId(productId);
 	}
 	@GetMapping("/products/{id}")
 	public List<ProductDto> getProductbyCategory(@PathVariable("id") long categoryId) {

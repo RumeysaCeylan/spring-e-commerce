@@ -15,15 +15,15 @@ import jakarta.persistence.Table;
 public class Product {
 	
 	@Id @GeneratedValue(strategy =  GenerationType.IDENTITY)
-	@Column(name = "category_id")
+	@Column(name = "product_id")
 	private long productId;
-	@Column(name = "category_name")
+	@Column(name = "product_name")
 	private String productName;
 	@Column(name = "sales_price")
 	private double salesPrice;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "category_id",insertable = false, updatable = false)
+	@JoinColumn(name = "category_id",insertable=true, updatable=true)
     private Category category;
 	
     public long getProductId() {

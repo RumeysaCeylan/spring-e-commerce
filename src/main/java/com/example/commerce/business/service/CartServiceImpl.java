@@ -30,7 +30,18 @@ public class CartServiceImpl implements CartService{
 		cartRepository.delete(cart);
 		
 	}
-	
+	public long getLatestCartId() {
+	    Optional<Cart> cartOptional = cartRepository.findTopByOrderByIdDesc();
+	    return cartOptional.isPresent() ? cartOptional.get().getCartId() : null;
+	}
+	public Cart getLatestCart() {
+	    Optional<Cart> cartOptional = cartRepository.findTopByOrderByIdDesc();
+	    return cartOptional.isPresent() ? cartOptional.get() : null;
+	}
+
+
+
+
 
     
 

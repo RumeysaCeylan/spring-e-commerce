@@ -9,6 +9,8 @@ public interface CartProductService {
 	CartProduct save(CartProduct cartProduct);
     void delete(CartProduct cartProduct);
     List<CartProduct> findAllByCartId(long cartId);
+    List<CartProduct> getDistinctCartProductsByCartId(long cartId);
+
     Optional<CartProduct> findById(long id);
 
 }

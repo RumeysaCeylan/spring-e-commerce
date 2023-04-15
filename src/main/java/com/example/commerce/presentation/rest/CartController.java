@@ -2,9 +2,12 @@ package com.example.commerce.presentation.rest;
 
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -45,23 +48,65 @@ public class CartController {
 
         return convertToDTO(cart);
     }
+    @GetMapping("/cartProducts/{cartId}")
+    public List<CartProduct> getCartProductsByCartId(@PathVariable("cartId") long cartId) {
+        List<CartProduct> cartProducts = cartProductService.getDistinctCartProductsByCartId(cartId);
+        return cartProducts;
+    }
+    @GetMapping("/latest")
+    public ResponseEntity<Long> getLatestCartId() {
+        Long latestCartId = cartService.getLatestCartId();
+        return new ResponseEntity<>(latestCartId, HttpStatus.OK);
+    }
+   
+
 
     @PostMapping("/add/{cartid}/{productid}")
     public CartProductDto addProduct(@PathVariable("cartid") long cartid, @PathVariable("productid") long productid, @RequestBody CartProductDto cartProductDto) {
-        Cart cart = cartService.findById(cartid).orElseGet(() ->{
+
+        Optional<Cart> existingCart = cartService.findById(cartid);
+        
+        Cart cart_ = cartService.getLatestCart();
+        if (existingCart.isPresent()) {
+        	
+            if (cart_.getStatus() == Status.COMPLETED) {
+                Cart newCart = new Cart();
+                newCart.setCartId(cartid+1);
+                newCart.setStatus(Status.NEW);
+                cartService.save(newCart);
+                CartProduct cartProduct = new CartProduct();
+                cartProduct.setCart(newCart);
+                cartProduct.setProductId(productid);
+                cartProduct.setSalesQuantity(cartProductDto.getSalesQuantity());
+
+                CartProduct savedCartProduct = cartProductService.save(cartProduct);
+                return convertCartProductToDTO(savedCartProduct);
+                
+            } else {
+            	Cart cart=existingCart.get();
+                CartProduct cartProduct = new CartProduct();
+                cartProduct.setCart(cart);
+                cartProduct.setProductId(productid);
+                cartProduct.setSalesQuantity(cartProductDto.getSalesQuantity());
+
+                CartProduct savedCartProduct = cartProductService.save(cartProduct);
+                return convertCartProductToDTO(savedCartProduct);
+            }
+        } else {
             Cart newCart = new Cart();
-            newCart.setCartId(cartid);
+            newCart.setCartId(cartid+1);
+            newCart.setStatus(Status.NEW);
             cartService.save(newCart);
-            return newCart;
-        });
+            CartProduct cartProduct = new CartProduct();
+            cartProduct.setCart(newCart);
+            cartProduct.setProductId(productid);
+            cartProduct.setSalesQuantity(cartProductDto.getSalesQuantity());
 
-        CartProduct cartProduct = new CartProduct();
-        cartProduct.setCart(cart);
-        cartProduct.setProductId(productid);
-        cartProduct.setSalesQuantity(cartProductDto.getSalesQuantity());
+            CartProduct savedCartProduct = cartProductService.save(cartProduct);
+            return convertCartProductToDTO(savedCartProduct);
+            }
 
-        CartProduct savedCartProduct = cartProductService.save(cartProduct);
-        return convertCartProductToDTO(savedCartProduct);
+
     }
     @Transactional
     @DeleteMapping("/remove/{cartid}/{productid}")

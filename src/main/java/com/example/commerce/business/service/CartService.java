@@ -8,5 +8,9 @@ public interface CartService {
 	 Optional<Cart> findById(long id);
 	    Cart save(Cart cart);
 	    void delete(Cart cart);
+	   long getLatestCartId();
+	   Cart getLatestCart();
+	   
+
 	
 }

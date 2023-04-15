@@ -12,7 +12,9 @@ import com.example.commerce.data.entity.CartProduct;
 
 @Repository
 public interface CartProductRepository extends CrudRepository<CartProduct, Long>{
-    @Query("SELECT cp FROM CartProduct cp WHERE cp.cart.cartId = :cartId")
-	List<CartProduct> findAllByCartId(@Param("cartId") long cartId);
+    @Query(value="SELECT * FROM cart_product WHERE cart_id = :cart_id",nativeQuery = true)
+	List<CartProduct> findAllByCartId(@Param("cart_id") long cartId);
+    @Query(value="SELECT DISTINCT cp.cart_product_id, cp.product_id, cp.sales_quantity FROM cart_product cp WHERE cp.cart_id = :cart_id", nativeQuery = true)
+	List<Object[]> getDistinctCartProductsByCartId(@Param("cart_id") long cartId);
 
 }

@@ -127,13 +127,14 @@ public class CartController {
         }
 
     @PutMapping("/checkout")
-    public void checkout(@RequestBody CartDto cartDto) {
+    public boolean checkout(@RequestBody CartDto cartDto) {
         Cart cart = cartService.findById(cartDto.getCartId()).orElseThrow(() -> new RuntimeException("Cart not found"));
         cart.setCustomerName(cartDto.getCustomerName());
         cart.setCardNumber(cartDto.getCardNumber());
         cart.setStatus(Status.COMPLETED);
 
         cartService.save(cart);
+        return true;
     }
 
     // Helper methods for converting between DTOs and entities
